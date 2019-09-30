@@ -8,7 +8,9 @@
 #
 #export EXTERNAL_SUBNET="192.168.111.0/24"
 
-#
+# Set the platform to esxi
+export NODES_PLATFORM="esxi"
+
 # This SSH key will be automatically injected into the provisioned host
 # by the provision_host.sh script.
 #

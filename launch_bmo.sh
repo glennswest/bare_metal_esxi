@@ -116,5 +116,5 @@ function launch_cluster_api() {
 clone_repos
 sudo su -l -c 'minikube start' "${USER}"
 launch_baremetal_operator
-apply_bm_hosts
+#apply_bm_hosts
 launch_cluster_api

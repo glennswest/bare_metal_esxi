@@ -82,22 +82,36 @@ fi
 
 # Check OS
 export OS=$(awk -F= '/^ID=/ { print $2 }' /etc/os-release | tr -d '"')
-if [[ ! $OS =~ ^(centos|rhel|ubuntu)$ ]]; then
+if [ -z "$OS" ]
+ then 
+    export OS=${OSTYPE}
+ fi
+if [[ ! $OS =~ ^(centos|rhel|ubuntu|darwin18)$ ]]; then
   echo "Unsupported OS"
   exit 1
 fi
 
 # Check CentOS version
 os_version=$(awk -F= '/^VERSION_ID=/ { print $2 }' /etc/os-release | tr -d '"' | cut -f1 -d'.')
+if [ $OS = "darwin18" ]; then
+     export os_version="18"
+   fi
 if [[ ${os_version} -ne 7 ]] && [[ ${os_version} -ne 8 ]] && [[ ${os_version} -ne 18 ]]; then
   echo "Required CentOS 7 or RHEL 7/8 or Ubuntu 18.04"
   exit 1
 fi
 
 # Check d_type support
-FSTYPE=$(df ${FILESYSTEM} --output=fstype | grep -v Type)
+if [ $OS = "darwin18" ]; then
+    export FSTYPE="darwin"
+   else 
+    FSTYPE=$(df ${FILESYSTEM} --output=fstype | grep -v Type)
+  fi
 
 case ${FSTYPE} in
+  'darwin')
+     # shellcheck disable=SC2143
+     ;;
   'ext4'|'btrfs')
   ;;
   'xfs')
@@ -116,7 +130,7 @@ esac
 if [ ! -d "$WORKING_DIR" ]; then
   echo "Creating Working Dir"
   sudo mkdir "$WORKING_DIR"
-  sudo chown "${USER}:${USER}" "$WORKING_DIR"
+  sudo chown "${USER}" "$WORKING_DIR"
   chmod 755 "$WORKING_DIR"
 fi
 
