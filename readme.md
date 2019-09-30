@@ -9,6 +9,7 @@ setup.sh
 
 
 ## After installed:
+```javascript
 oc login -u kubeadmin -p BMLkR-NjA28-v7exC-8bwAk  https://api.crc.testing:6443
 oc project metal3
 oc get all
